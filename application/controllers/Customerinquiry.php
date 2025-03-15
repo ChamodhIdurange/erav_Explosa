@@ -1,0 +1,58 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+date_default_timezone_set('Asia/Colombo');
+
+class Customerinquiry extends CI_Controller {
+    public function index(){
+		$this->load->model('Customerinquiryinfo');
+		$this->load->model('Customerinfo');
+		$this->load->model('Commeninfo');
+		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['customerlist']=$this->Customerinfo->GetCustomerList();
+		$result['itemlist']=$this->Customerinquiryinfo->Getcustomeritems();
+		$result['measurelist']=$this->Customerinquiryinfo->Getmeasuretype();
+		$this->load->view('customerinquiry',$result);
+	}
+   
+	public function Customerinquiryinsertupdate(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryinsertupdate();
+	}
+	public function GetAllCustomerInquiries(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->GetAllCustomerInquiries();
+	}
+	public function Customerinquiryedit(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryedit();
+	}
+	public function Customerinquirystatus($x, $y){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquirystatus($x, $y);
+	}
+	public function Customerinquiryapprove($x){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryapprove($x);
+	}
+	public function Customerinquiryjobedit(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryjobedit();
+	}
+	public function Customerinquiryjoblistedit(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryjoblistedit();
+	}
+	public function Customerinquiryviewjoblist(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Customerinquiryviewjoblist();
+	}
+	public function Getcustomeritems(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Getcustomeritems();
+	}
+	public function Getinquirylist(){
+		$this->load->model('Customerinquiryinfo');
+        $result=$this->Customerinquiryinfo->Getinquirylist();
+	}
+}
