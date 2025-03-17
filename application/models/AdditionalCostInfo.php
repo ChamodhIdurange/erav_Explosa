@@ -345,4 +345,101 @@ class AdditionalCostInfo extends CI_Model
 
         return $json_data;
     }
+    public function get_cost_types()
+    {
+        $this->db->select('idtbl_additional_cost, costtype');
+        $this->db->from('tbl_additional_cost');
+        $this->db->where('status', 1); 
+        $query = $this->db->get();
+
+        $result = $query->result(); 
+        return $result;
+    }
+    public function save_additional_costs($data, $jobQuotationId)
+    {
+        $this->db->trans_begin();
+
+        $userID = $_SESSION['userid'];
+        $insertdatetime = date('Y-m-d H:i:s');
+
+        $batch_data = [];
+        foreach ($data as $item) {
+            $batch_data[] = [
+                'job_quotation_id' => $jobQuotationId,
+                'quotation_item' => $item['quotationItem'],
+                'additional_price' => $item['additionalPrice'],
+                'cost_type' => $item['costType'],
+                'remarks' => $item['remarks'],
+                'insertdatetime' => $insertdatetime,
+                'tbl_user_idtbl_user' => $userID 
+            ];
+        }
+
+        $this->db->insert_batch('tbl_added_additional_costs', $batch_data);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === TRUE) {
+            $this->db->trans_commit();
+            return TRUE;
+        } else {
+            $this->db->trans_rollback();
+            return FALSE;
+        }
+    }
+
+    public function get_additional_costs_by_quotation($jobQuotationId)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_added_additional_costs');
+        $this->db->where('job_quotation_id', $jobQuotationId);
+        $this->db->where('status !=', 'deleted');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function get_additional_cost_by_id($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('tbl_added_additional_costs');
+
+        return $query->result();
+    }
+
+
+    public function update_additional_cost($data)
+    {
+        $this->db->trans_begin();
+
+        $userID = $_SESSION['userid'];
+        $updatedatetime = date('Y-m-d H:i:s');
+
+        $update_data = array(
+            'quotation_item' => $data['quotationItem'],
+            'additional_price' => $data['additionalPrice'],
+            'cost_type' => $data['costType'],
+            'remarks' => $data['remarks'],
+            'updatedatetime' => $updatedatetime,
+            'tbl_user_idtbl_user' => $userID 
+        );
+
+        $this->db->where('id', $data['id']);
+        $this->db->update('tbl_added_additional_costs', $update_data);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === TRUE) {
+            $this->db->trans_commit();
+            return TRUE;
+        } else {
+            $this->db->trans_rollback();
+            return FALSE;
+        }
+    }
+
+    public function delete_additional_cost($id)
+    {
+        $this->db->where('id', $id);
+        return $this->db->update('tbl_added_additional_costs', ['status' => 'deleted']);
+    }
+
 }

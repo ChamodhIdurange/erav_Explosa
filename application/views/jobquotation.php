@@ -1,6 +1,6 @@
-<?php 
-include "include/header.php";  
-include "include/topnavbar.php"; 
+<?php
+include "include/header.php";
+include "include/topnavbar.php";
 ?>
 <div id="layoutSidenav">
 	<div id="layoutSidenav_nav">
@@ -24,7 +24,9 @@ include "include/topnavbar.php";
 						<div class="row">
 							<div class="col-12 text-right">
 								<button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-									data-target="#staticBackdrop" <?php if($addcheck==0){echo 'disabled';} ?>><i
+									data-target="#staticBackdrop" <?php if ($addcheck == 0) {
+										echo 'disabled';
+									} ?>><i
 										class="fas fa-plus mr-2"></i>Create
 									Job Quotation</button>
 								<hr>
@@ -80,10 +82,11 @@ include "include/topnavbar.php";
 									<select class="form-control form-control-sm selecter2 px-0" name="inquiryId"
 										id="inquiryId" required>
 										<option value="">Select</option>
-										<?php foreach($inquirylist->result() as $rowinquirylist){ ?>
-										<option value="<?php echo $rowinquirylist->idtbl_customerinquiry ?>">
-											<?php echo $rowinquirylist->name ?> - INQ
-											No:<?php echo $rowinquirylist->idtbl_customerinquiry ?></option>
+										<?php foreach ($inquirylist->result() as $rowinquirylist) { ?>
+											<option value="<?php echo $rowinquirylist->idtbl_customerinquiry ?>">
+												<?php echo $rowinquirylist->name ?> - INQ
+												No:<?php echo $rowinquirylist->idtbl_customerinquiry ?>
+											</option>
 										<?php } ?>
 									</select>
 								</div>
@@ -94,9 +97,10 @@ include "include/topnavbar.php";
 									<select class="form-control form-control-sm selecter2 px-0" name="mainitem"
 										id="mainitem" required>
 										<option value="">Select</option>
-										<?php foreach($mainitemlist->result() as $rowitemslist){ ?>
-										<option value="<?php echo $rowitemslist->idtbl_mainitems ?>">
-											<?php echo $rowitemslist->itemname ?></option>
+										<?php foreach ($mainitemlist->result() as $rowitemslist) { ?>
+											<option value="<?php echo $rowitemslist->idtbl_mainitems ?>">
+												<?php echo $rowitemslist->itemname ?>
+											</option>
 										<?php } ?>
 									</select>
 								</div>
@@ -200,10 +204,166 @@ include "include/topnavbar.php";
 		</div>
 	</div>
 </div>
+
+<!--  additional cost add Modal -->
+<div class="modal fade" id="modal_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+	aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">Add Additional Cost</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<!-- Form Section -->
+					<div class="col-md-6">
+						<form id="additionalCostForm">
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label class="small font-weight-bold text-dark">Select Quotation Item*</label>
+									<select class="form-control form-control-sm" id="quotationItemSelect" required>
+										<option value="">Select Item</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label class="small font-weight-bold text-dark">Additional Price*</label>
+									<input type="number" class="form-control form-control-sm" id="additionalPrice"
+										placeholder="Enter additional price" step="0.01" min="0" required>
+								</div>
+								<div class="col-md-6">
+									<label class="small font-weight-bold text-dark">Select Cost Type*</label>
+									<select class="form-control form-control-sm" id="costTypeSelect" required>
+										<option value="">Select Cost Type</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label class="small font-weight-bold text-dark">Remarks</label>
+									<textarea class="form-control form-control-sm" id="costremarks" rows="2"
+										placeholder="Enter remarks"></textarea>
+								</div>
+							</div>
+							<button type="button" class="btn btn-primary btn-sm float-right"
+								id="addTempData">Add</button>
+						</form>
+					</div>
+
+					<div class="col-md-6">
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped table-sm" id="tblAdditionalCosts">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Quotation Item</th>
+										<th>Price</th>
+										<th>Cost Type</th>
+										<th>Remarks</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							<button type="button" id="saveData" class="btn btn-primary btn-sm float-right">Save</button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Added Additional Price View -->
+<div class="modal fade" id="modaladdionalcost" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+	aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">View Additional Cost</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<hr>
+				<div class="col-12">
+					<div class="scrollbar pb-3" id="style-2">
+						<table class="table table-bordered table-striped table-sm nowrap" id="tblquotationdetails">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Quotation Item</th>
+									<th>Price</th>
+									<th>Cost Type</th>
+									<th>Remarks</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody id="tbladdionalcost">
+
+							</tbody>
+						</table>
+						<div class="total-price mb-3">
+							<strong>Total Price: </strong><span id="totalPrice">0</span>
+						</div>
+
+						<!-- Update Form -->
+						<div id="updateFormContainer" style="display: none;">
+							<form id="updateadditionalCostForm">
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label class="small font-weight-bold text-dark">Select Quotation Item*</label>
+										<select class="form-control form-control-sm" id="updatequotationItemSelect"
+											required>
+											<option value="">Select Item</option>
+										</select>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<label class="small font-weight-bold text-dark">Additional Price*</label>
+										<input type="number" class="form-control form-control-sm"
+											id="updateadditionalPrice" step="0.01" min="0" required>
+									</div>
+									<div class="col-md-6">
+										<label class="small font-weight-bold text-dark">Select Cost Type*</label>
+										<select class="form-control form-control-sm" id="updatecostTypeSelect" required>
+											<option value="">Select Cost Type</option>
+										</select>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label class="small font-weight-bold text-dark">Remarks</label>
+										<textarea class="form-control form-control-sm" id="updatecostremarks"
+											rows="2"></textarea>
+									</div>
+								</div>
+								<button type="button" class="btn btn-primary btn-sm float-right"
+									id="saveUpdatedData">Save</button>
+							</form>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <?php include "include/footerscripts.php"; ?>
 
 
 <script>
+	var jobQuotationId;
 	$(document).ready(function () {
 		var addcheck = '<?php echo $addcheck; ?>';
 		var editcheck = '<?php echo $editcheck; ?>';
@@ -230,28 +390,28 @@ include "include/topnavbar.php";
 				[10, 25, 50, 'All'],
 			],
 			"buttons": [{
-					extend: 'csv',
-					className: 'btn btn-success btn-sm',
-					title: 'Customer  Information',
-					text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+				extend: 'csv',
+				className: 'btn btn-success btn-sm',
+				title: 'Customer  Information',
+				text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+			},
+			{
+				extend: 'pdf',
+				className: 'btn btn-danger btn-sm',
+				title: 'Customer  Information',
+				text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+			},
+			{
+				extend: 'print',
+				title: 'Customer  Information',
+				className: 'btn btn-primary btn-sm',
+				text: '<i class="fas fa-print mr-2"></i> Print',
+				customize: function (win) {
+					$(win.document.body).find('table')
+						.addClass('compact')
+						.css('font-size', 'inherit');
 				},
-				{
-					extend: 'pdf',
-					className: 'btn btn-danger btn-sm',
-					title: 'Customer  Information',
-					text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
-				},
-				{
-					extend: 'print',
-					title: 'Customer  Information',
-					className: 'btn btn-primary btn-sm',
-					text: '<i class="fas fa-print mr-2"></i> Print',
-					customize: function (win) {
-						$(win.document.body).find('table')
-							.addClass('compact')
-							.css('font-size', 'inherit');
-					},
-				},
+			},
 				// 'copy', 'csv', 'excel', 'pdf', 'print'
 			],
 
@@ -263,69 +423,81 @@ include "include/topnavbar.php";
 				[0, "desc"]
 			],
 			"columns": [{
-					"data": "idtbl_job_quotation"
-				},
-				{
-					"data": "remarks"
-				},
+				"data": "idtbl_job_quotation"
+			},
+			{
+				"data": "remarks"
+			},
 
-				{
-					"targets": -1,
-					"className": 'text-right',
-					"data": null,
-					"render": function (data, type, full) {
-						return addCommas(parseFloat(full['quotation_total']).toFixed(2));
-					}
-				},
-				{
-					"data": "accepted_status",
-					"className": 'text-right',
-					"render": function (data, type, full) {
-						if (data == 0) {
-							return '<span class="text-danger">Not Accepted</span>';
-						} else {
-							return '<span class="text-success">Accepted</span>';
-						}
-					}
-				},
-				{
-					"targets": -1,
-					"className": 'text-right',
-					"data": null,
-					"render": function (data, type, full) {
-						var button = '';
-						button += '<button class="btn btn-dark btn-sm btnview mr-1" id="' + full[
-							'idtbl_job_quotation'] + '"><i class="fas fa-eye"></i></button>';
-
-						if (full['accepted_status'] == 0) {
-							button +=
-								'<a href="<?php echo base_url() ?>Jobquotation/Deleteandacceptquotation/' +
-								full['idtbl_job_quotation'] +
-								'/1" onclick="return accept_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';
-							if (statuscheck != 1) {
-								button += 'd-none';
-							}
-							button += '"><i class="fas fa-times"></i></a>';
-						} else {
-							button += '<button target="_self" class="btn btn-success btn-sm mr-1 ';
-							if (statuscheck != 1) {
-								button += 'd-none';
-							}
-							button += '"><i class="fas fa-check"></i></button>';
-						}
-						if (full['accepted_status'] == 0) {
-							button +=
-								'<a href="<?php echo base_url() ?>Jobquotation/Deleteandacceptquotation/' +
-								full['idtbl_job_quotation'] +
-								'/2" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
-							if (deletecheck != 1) {
-								button += 'd-none';
-							}
-							button += '"><i class="fas fa-trash-alt"></i></a>';
-						}
-						return button;
+			{
+				"targets": -1,
+				"className": 'text-right',
+				"data": null,
+				"render": function (data, type, full) {
+					return addCommas(parseFloat(full['quotation_total']).toFixed(2));
+				}
+			},
+			{
+				"data": "accepted_status",
+				"className": 'text-right',
+				"render": function (data, type, full) {
+					if (data == 0) {
+						return '<span class="text-danger">Not Accepted</span>';
+					} else {
+						return '<span class="text-success">Accepted</span>';
 					}
 				}
+			},
+			{
+				"targets": -1,
+				"className": 'text-right',
+				"data": null,
+				"render": function (data, type, full) {
+					var button = '';
+					button += '<button class="btn btn-dark btn-sm btnview mr-1" id="' + full[
+						'idtbl_job_quotation'] + '"><i class="fas fa-eye"></i></button>';
+
+					if (full['accepted_status'] == 0) {
+						button +=
+							'<a href="<?php echo base_url() ?>Jobquotation/Deleteandacceptquotation/' +
+							full['idtbl_job_quotation'] +
+							'/1" onclick="return accept_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';
+						if (statuscheck != 1) {
+							button += 'd-none';
+						}
+						button += '"><i class="fas fa-times"></i></a>';
+
+					} else {
+						button += '<button target="_self" class="btn btn-success btn-sm mr-1 ';
+						if (statuscheck != 1) {
+							button += 'd-none';
+						}
+						button += '"><i class="fas fa-check"></i></button>';
+
+					}
+					if (full['accepted_status'] == 0) {
+						button +=
+							'<a href="<?php echo base_url() ?>Jobquotation/Deleteandacceptquotation/' +
+							full['idtbl_job_quotation'] +
+							'/2" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
+						if (deletecheck != 1) {
+							button += 'd-none';
+						}
+						button += '"><i class="fas fa-trash-alt"></i></a>';
+					}
+
+					button += '<button class="btn btn-info btn-sm add_additional_cost mr-1" data-id="' + full['idtbl_job_quotation'] +
+						'" data-toggle="modal" data-target="#modal_details"><i class="fas fa-plus"></i></button>';
+					button += '<button class="btn btn-info btnviewaddionalcost btn-sm  mr-1" data-id="' + full['idtbl_job_quotation'] +
+						'" data-toggle="modal" data-target="#modaladdionalcost"><i class="fas fa-arrow-right"></i></button>';
+
+
+
+
+					return button;
+
+				}
+			}
 			],
 			drawCallback: function (settings) {
 				$('[data-toggle="tooltip"]').tooltip();
@@ -355,16 +527,16 @@ include "include/topnavbar.php";
 							'</td><td class="text-left">' + obj[i].qty +
 							'</td><td class="text-left">' + obj[i].comments +
 							'</td><td class="text-right">' + obj[i].requiredAmount
-							.toFixed(2) +
+								.toFixed(2) +
 							'</td><td class="text-right">' + formatUnitPrice +
 							'</td><td class="text-right">' + formattotalPrice +
 							'</td><td class="d-none">' + obj[i].unitPrice +
 							'</td><td class="d-none quotationTot">' + obj[i]
-							.totalPrice +
+								.totalPrice +
 							'</td><td class="d-none">' + obj[i]
-							.tbl_mainitems_idtbl_mainitems +
+								.tbl_mainitems_idtbl_mainitems +
 							'</td><td class="d-none">' + obj[i]
-							.materialId +
+								.materialId +
 							'</td></tr>'
 						);
 					});
@@ -433,16 +605,18 @@ include "include/topnavbar.php";
 				success: function (result) { // alert(result)
 					var obj = JSON.parse(result);
 
-                    var formattedReelAmount = 0;
-                    var formattedUnitPrice = 0;
-                    var formattedTotalPrice = 0;
+					$('#tblquotationdetails tbody').empty();
+
+					var formattedReelAmount = 0;
+					var formattedUnitPrice = 0;
+					var formattedTotalPrice = 0;
 
 					$.each(obj, function (i, item) {
 						formattedReelAmount = addCommas(parseFloat(obj[i]
-								.required_reel_amount)
+							.required_reel_amount)
 							.toFixed(2));
 						formattedUnitPrice = addCommas(parseFloat(obj[i]
-								.calculated_unitprice)
+							.calculated_unitprice)
 							.toFixed(2));
 						formattedTotalPrice = addCommas(parseFloat(obj[i].total_price)
 							.toFixed(2));
@@ -511,6 +685,305 @@ include "include/topnavbar.php";
 		})
 
 	});
+
+
+
+
+
+
+	//function for add to additional cost 
+
+	$(document).ready(function () {
+		let additionalCosts = []; // Temporary storage
+		$.ajax({
+			url: '<?= base_url("AdditionalCost/fetch_cost_types") ?>',
+			type: 'GET',
+			success: function (response) {
+				let data = JSON.parse(response);
+				data.forEach(item => {
+					$("#costTypeSelect").append(`<option value="${item.idtbl_additional_cost}">${item.costtype}</option>`);
+				});
+			},
+			error: function () {
+				alert("Failed to load cost types.");
+			}
+		});
+
+		// Add Data Temporarily
+		$('#addTempData').click(function () {
+			let quotationItem = $('#quotationItemSelect').val();
+			let additionalPrice = $('#additionalPrice').val();
+			let costType = $('#costTypeSelect').val();
+			let costTypeText = $('#costTypeSelect option:selected').text();
+			let remarks = $('#costremarks').val();
+
+			if (!quotationItem || !additionalPrice || !costType) {
+				alert("Please fill in all required fields.");
+				return;
+			}
+			let quotationItemText = $('#quotationItemSelect option:selected').text();
+
+			let newEntry = {
+				quotationItem: quotationItemText,
+				additionalPrice: additionalPrice,
+				costType: costTypeText,
+				remarks: remarks
+			};
+			console.log("add dd" + newEntry);
+			additionalCosts.push(newEntry);
+			updateTable();
+		});
+
+		// Function to Update Table
+		function updateTable() {
+			let tbody = $('#tblAdditionalCosts tbody');
+			tbody.empty();
+			additionalCosts.forEach((item, index) => {
+			
+
+				tbody.append(`
+				<tr>
+					<td>${index + 1}</td>
+					<td>${item.quotationItem}</td> <!-- Directly use the stored text -->
+                <td>${item.additionalPrice}</td>
+                <td>${item.costType}</td> <!-- Directly use the stored text -->
+                <td>${item.remarks}</td>
+					<td><button class="btn btn-danger btn-sm delete-row" data-index="${index}">Delete</button></td>
+				</tr>
+			`);
+			});
+		}
+
+
+
+		// Delete Temporary Row
+		$(document).on('click', '.delete-row', function () {
+			let index = $(this).data('index');
+			additionalCosts.splice(index, 1);
+			updateTable();
+		});
+
+		// Save Data to Database
+		$('#saveData').click(function () {
+			if (additionalCosts.length === 0) {
+				alert("No data to save.");
+				return;
+			}
+
+			$.ajax({
+				url: '<?= base_url("AdditionalCost/save_additional_costs") ?>',
+				type: 'POST',
+				data: {
+					additionalCosts: additionalCosts,
+					jobQuotationId: jobQuotationId
+				},
+				dataType: 'json',
+				success: function (response) {
+					if (response.success) {
+						alert("Data saved successfully!");
+						additionalCosts = [];
+						updateTable();
+					} else {
+						alert("Failed to save data.");
+					}
+				},
+				error: function () {
+					alert("Error saving data.");
+				}
+			});
+		});
+
+
+
+		// btnviewdetails
+
+		$(document).on("click", ".add_additional_cost", function () {
+			jobQuotationId = $(this).data('id'); // Get the data-id
+			console.log("Selected Row ID:", jobQuotationId);
+
+			$("#quotationItemSelect").html('<option value="">Select Item</option>');
+
+			$.ajax({
+				url: '<?php echo base_url() ?>Jobquotation/Getquotationdetails',
+				type: 'POST',
+				data: { recordId: jobQuotationId },
+				dataType: 'json',
+				success: function (response) {
+					console.log("Parsed JSON Response:", response);
+
+					if (response.length > 0) {
+						response.forEach(item => {
+							$("#quotationItemSelect").append(`<option value="${item.idtbl_job_quotation_details}">${item.itemname}</option>`);
+						});
+					} else {
+						$("#quotationItemSelect").append('<option value="">No Data Found</option>');
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("AJAX Error:", xhr.responseText);
+					$("#quotationItemSelect").append('<option value="">Error Fetching Data</option>');
+				}
+			});
+		});
+
+	});
+
+
+
+	// view added additional cost item table
+	$(document).on('click', '.btnviewaddionalcost', function () {
+		jobQuotationId = $(this).data('id');
+
+
+		$.ajax({
+			url: '<?= base_url('AdditionalCost/fetch_additional_costs_by_quotation/') ?>' + jobQuotationId,
+			type: 'GET',
+			dataType: 'json',
+			success: function (response) {
+				var tableBody = $('#tbladdionalcost');
+				var totalPrice = 0;
+
+				tableBody.empty();
+				response.forEach(function (item, index) {
+					var row = '<tr>' +
+						'<td>' + (index + 1) + '</td>' +
+						'<td>' + item.quotation_item + '</td>' +
+						'<td>' + item.additional_price + '</td>' +
+						'<td>' + item.cost_type + '</td>' +
+						'<td>' + item.remarks + '</td>' +
+						'<td>' +
+						'<button class="btn btn-primary btn-sm updateBtn" data-id="' + item.id + '"><i class="fas fa-pen"></i></button>' + " " +
+						'<button class="btn btn-danger btn-sm deleteBtn" data-id="' + item.id + '"><i class="fas fa-trash-alt"></i></button>'
+						+
+						'</td>' +
+						'</tr>';
+					tableBody.append(row);
+					totalPrice += parseFloat(item.additional_price);
+				});
+
+
+				$('#totalPrice').text(totalPrice.toFixed(2));
+
+
+				$('#modaladdionalcost').modal('show');
+			}
+		});
+	});
+
+
+	$(document).on('click', '.deleteBtn', function () {
+		var id = $(this).data('id');
+
+		if (confirm('Are you sure you want to delete this record?')) {
+			$.ajax({
+				url: '<?= base_url('AdditionalCost/delete_additional_cost/') ?>' + id,
+				type: 'POST',
+				dataType: 'json',
+				success: function (response) {
+					if (response.success) {
+						alert('Record deleted successfully');
+						$('#modaladdionalcost').modal('hide');
+						location.reload();
+					} else {
+						alert('Error deleting record');
+					}
+				}
+			});
+		}
+	});
+	//update for the added additional cost items
+	$(document).ready(function () {
+		$(document).on('click', '.updateBtn', function () {
+			var id = $(this).data('id');
+			var url = '<?= site_url('AdditionalCost/get_additional_cost/') ?>' + id;
+
+			console.log("Additional Cost ID:", id);
+			console.log("Global Job Quotation ID:", jobQuotationId);
+
+			// Step 1: Fetch quotation items based on jobQuotationId
+			$.post('<?php echo base_url() ?>Jobquotation/Getquotationdetails', { recordId: jobQuotationId }, function (result) {
+				console.log("Quotation Items Raw Response:", result);
+				let obj = JSON.parse(result);
+				console.log("Quotation Items Parsed JSON:", obj);
+
+				$("#updatequotationItemSelect").html('<option value="">Select Item</option>');
+				if (obj.length > 0) {
+					obj.forEach(item => {
+						$("#updatequotationItemSelect").append(
+							`<option value="${item.itemname}">${item.itemname}</option>`
+						);
+					});
+				} else {
+					$("#updatequotationItemSelect").append('<option value="">No Items Found</option>');
+				}
+
+				// Step 2: Fetch cost types
+				$.ajax({
+					url: '<?php echo base_url(); ?>AdditionalCost/fetch_cost_types',
+					type: 'GET',
+					success: function (result) {
+						let costTypes = JSON.parse(result);
+						$("#updatecostTypeSelect").html('<option value="">Select Cost Type</option>');
+						if (costTypes.length > 0) {
+							costTypes.forEach(item => {
+								$("#updatecostTypeSelect").append(
+									`<option value="${item.costtype}">${item.costtype}</option>`
+								);
+							});
+						}
+
+						// Step 3: Fetch and populate additional cost data
+						$.ajax({
+							url: url,
+							type: 'GET',
+							dataType: 'json',
+							success: function (response) {
+								if (response && response.length > 0) {
+									var item = response[0];
+									$("#updatequotationItemSelect").val(item.quotation_item);
+									$("#updateadditionalPrice").val(item.additional_price);
+									$("#updatecostTypeSelect").val(item.cost_type);
+									$("#updatecostremarks").val(item.remarks);
+									$('#saveUpdatedData').data('id', item.id);
+									$('#updateFormContainer').slideDown();
+								}
+							}
+						});
+					}
+				});
+			});
+		});
+
+		// Save updated data
+		$('#saveUpdatedData').on('click', function () {
+			var id = $(this).data('id');
+			var data = {
+				id: id,
+				quotationItem: $('#updatequotationItemSelect').val(),
+				additionalPrice: $('#updateadditionalPrice').val(),
+				costType: $('#updatecostTypeSelect').val(),
+				remarks: $('#updatecostremarks').val()
+			};
+
+			$.ajax({
+				url: '<?= base_url('AdditionalCost/update_additional_cost') ?>',
+				type: 'POST',
+				data: data,
+				dataType: 'json',
+				success: function (response) {
+					if (response.success) {
+						alert('Data updated successfully');
+						$('#updateFormContainer').slideUp();
+						location.reload();
+					} else {
+						alert('Error updating data');
+					}
+				}
+			});
+		});
+	});
+
+
 
 
 	function calculateQuotationTot() {
