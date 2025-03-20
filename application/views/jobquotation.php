@@ -56,7 +56,7 @@ include "include/topnavbar.php";
 		<?php include "include/footerbar.php"; ?>
 	</div>
 </div>
-<!-- Modal -->
+<!-- Modal view -->
 <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
 	aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-xl">

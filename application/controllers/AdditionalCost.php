@@ -92,4 +92,5 @@ class AdditionalCost extends CI_Controller
         $result = $this->AdditionalCostInfo->delete_additional_cost($id);
         echo json_encode(['success' => $result]);
     }
+    //
 }
