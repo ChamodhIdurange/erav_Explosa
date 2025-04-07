@@ -124,6 +124,11 @@ if ($functionmenu2 == 'Useraccount') {
     $editcheck = checkprivilege($menuprivilegearray, 24, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 24, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 24, 4);
+}else if ($controllermenu == 'cartontype') {
+    $addcheck = checkprivilege($menuprivilegearray, 27, 1);
+    $editcheck = checkprivilege($menuprivilegearray, 27, 2);
+    $statuscheck = checkprivilege($menuprivilegearray, 27, 3);
+    $deletecheck = checkprivilege($menuprivilegearray, 27, 4);
 }
 
 function checkprivilege($arraymenu, $menuID, $type)
@@ -203,7 +208,10 @@ function checkprivilege($arraymenu, $menuID, $type)
                             <a class="nav-link p-0 px-3 py-1 text-dark"
                                 href="<?php echo base_url() . 'AdditionalCost'; ?>">AdditionalCost</a>
                         <?php } 
-                        
+                        if (menucheck($menuprivilegearray, 27) == 1) { ?>
+                            <a class="nav-link p-0 px-3 py-1 text-dark"
+                                href="<?php echo base_url() . 'cartontype'; ?>">Carton Type</a>
+                        <?php } 
                         
                         ?>
                     </nav>
