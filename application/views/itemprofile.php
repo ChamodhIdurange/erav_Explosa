@@ -4,7 +4,6 @@ include "include/topnavbar.php";
 ?>
 <style>
 	body {
-		font-family: 'Arial', sans-serif;
 		background-color: #f9f9f9;
 		color: #333;
 		line-height: 1.6;
@@ -104,7 +103,88 @@ include "include/topnavbar.php";
 									</select>
 								</div>
 							</div>
+							<div class="col-3">
+								<div class="form-group mb-1">
+									<label class="small font-weight-bold">No Of sheet per Box*</label>
+									<input type="text" class="form-control form-control-sm" name="noofbox"
+										id="noofbox" required>
+								</div>
+							</div>
 						</div>
+						<div class="row">
+						<div class="col-3">
+						<div class="form-group mb-1">
+						<label class="small font-weight-bold">Carton Type*</label>
+						<select class="form-control selecter2 form-control-sm" name="cartontype" id="cartontype" required>
+							<option value="">Select</option>
+							<?php foreach ($cartontypelist->result() as $rowcartontype) { ?>
+								<option value="<?php echo $rowcartontype->idtbl_cartontype; ?>">
+									<?php echo $rowcartontype->cartontypename; ?>
+								</option>
+							<?php } ?>
+						</select>
+					</div>
+						</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+							<div class="row ">
+							<div class="col-3">
+							<div class="form-group mb-1">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="hasOffset">
+										<label class="form-check-label small font-weight-bold">Has Offset</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						
+						<div class="row ">
+							<div class="col-6">
+								<div class="form-group mb-1">
+								<label class="small font-weight-bold">Length (In)*</label>
+								<input type="text" class="form-control form-control-sm" name="oflength" id="oflength" disabled required>
+								</div>
+							</div>
+							<div class="col-6">
+							<div class="form-group mb-1">
+								<label class="small font-weight-bold">Width (In)*</label>
+								<input type="text" class="form-control form-control-sm" name="ofwidth" id="ofwidth" disabled required>
+								</div>
+							</div>
+						</div>
+							</div>
+							<div class="col-md-6">
+
+							<div class="row">
+							<div class="col-3">
+							<div class="form-group mb-1">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="hasdiecut">
+										<label class="form-check-label small font-weight-bold">Die cut</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-6">
+								<div class="form-group mb-1">
+								<label class="small font-weight-bold">Length (In)*</label>
+								<input type="text" class="form-control form-control-sm" name="dielength" id="dielength" disabled required>
+								</div>
+							</div>
+							<div class="col-6">
+							<div class="form-group mb-1">
+								<label class="small font-weight-bold">Width (In)*</label>
+								<input type="text" class="form-control form-control-sm" name="diewidth" id="diewidth" disabled required>
+								</div>
+							</div>
+						</div>
+							</div>
+						</div>
+						
+						
 						<div class="form-group mt-2">
 							<hr>
 							<h6 class="font-weight-bold">Measurement Data</h6>
@@ -186,14 +266,14 @@ include "include/topnavbar.php";
 								<div class="form-group mb-1">
 									<label class="small font-weight-bold">Reel Size(In)*</label>
 									<input type="text" class="form-control form-control-sm" name="reelsize"
-										id="reelsize" required>
+										id="reelsize" required disabled>
 								</div>
 							</div>
 							<div class="col">
 								<div class="form-group mb-1">
 									<label class="small font-weight-bold">Cut Size(In)*</label>
 									<input type="text" class="form-control form-control-sm" name="cutsize" id="cutsize"
-										required>
+										required disabled>
 								</div>
 							</div>
 							<div class="col">
@@ -447,6 +527,15 @@ include "include/topnavbar.php";
 <?php include "include/footerscripts.php"; ?>
 <script>
 	$(document).ready(function () {
+
+		function roundUpToNextOdd(number) {
+        let rounded = Math.ceil(number);
+        if (rounded % 2 === 0) {
+            return rounded + 1;
+        }
+        return rounded;
+    	}
+
 		var addcheck = '<?php echo $addcheck; ?>';
 		var editcheck = '<?php echo $editcheck; ?>';
 		var statuscheck = '<?php echo $statuscheck; ?>';
@@ -496,48 +585,117 @@ include "include/topnavbar.php";
 			});
 		})
 
+
+
+		function validateDimensions(width, height, length) {
+        const hasOffset = $('#hasOffset').is(':checked');
+        const hasDiecut = $('#hasdiecut').is(':checked');
+        const offsetLength = parseFloat($('#oflength').val()) || 0;
+        const offsetWidth = parseFloat($('#ofwidth').val()) || 0;
+        const diecutLength = parseFloat($('#dielength').val()) || 0;
+        const diecutWidth = parseFloat($('#diewidth').val()) || 0;
+        const noofups = $('#noofups').val() || 1 ;
+		console.log('number of nn',noofups);	
+        
+        // Calculate reel size and cut size 
+		console.log('width + height',width+height);
+
+        const additionalInch = (noofups == 1 || noofups == 2) ? 1 : 1.5;
+        const rawReelsize = ((width + height) * noofups) + additionalInch;
+		console.log('befor rownd',rawReelsize);
+        const reelsize = roundUpToNextOdd(rawReelsize);
+		console.log('reeeel',rawReelsize);
+		console.log('orignl reeel',reelsize);
+
+
+        let originalCutSize = length + width;
+        let cutsize;
+        if ((originalCutSize * 2) < 81) {
+            cutsize = (originalCutSize * 2) + 2;
+        } else {
+            cutsize = originalCutSize + 2;
+        }
+
+        // Validation checks
+        let isValid = true;
+        let errorMessage = "";
+        
+        if (hasOffset) {
+            if (cutsize > offsetWidth) {
+                isValid = false;
+                errorMessage += `Cut size (${cutsize}") cannot be greater than Offset Width (${offsetWidth}")\n`;
+            }
+            // if (reelsize > offsetLength) {
+            //     isValid = false;
+            //     errorMessage += `Reel size (${reelsize}") cannot be greater than Offset Length (${offsetLength}")\n`;
+            // }
+        }
+        
+        if (hasDiecut) {
+            if (cutsize > diecutWidth) {
+                isValid = false;
+                errorMessage += `Cut size (${cutsize}") cannot be greater than Diecut Width (${diecutWidth}")\n`;
+            }
+            // if (reelsize > diecutLength) {
+            //     isValid = false;
+            //     errorMessage += `Reel size (${reelsize}") cannot be greater than Diecut Length (${diecutLength}")\n`;
+            // }
+        }
+        
+        if (!isValid) {
+            alert("Validation errors:\n" + errorMessage + "\nPlease adjust your measurements.");
+            // Reset measurement fields
+            $('#width').val('');
+            $('#height').val('');
+            $('#length').val('');
+            $('#widthcm').val('');
+            $('#heightcm').val('');
+            $('#lengthcm').val('');
+            $('#widthm').val('');
+            $('#heightm').val('');
+            $('#lengthm').val('');
+            $('#reelsize').val('');
+            $('#cutsize').val('');
+            return false;
+        }
+        
+        // Update the fields if validation passes
+        $('#reelsize').val(reelsize);
+        $('#cutsize').val(cutsize);
+		$('#actualcutsize').val(originalCutSize);
+
+        return true;
+    }
+
+		// inch inputs
 		$("#width, #height, #length").on("input", function () {
 			let width = parseFloat($("#width").val()) || 0;
 			let height = parseFloat($("#height").val()) || 0;
 			let length = parseFloat($("#length").val()) || 0;
-			var additionalInch = 0;
-			let noofups = $('#noofups').val();
-
-			if(noofups == 1 || noofups == 2){
-				additionalInch = 1;
-			}else{
-				additionalInch = 1.5;
-			}
-			var reelsize = width + height + additionalInch;
-			var cutsize = length + width + 2;
-
-			$('#reelsize').val(reelsize);
-			$('#cutsize').val(cutsize);
-			convertMeasurmentDataInches(width, height, length);
+			
+			if (validateDimensions(width, height, length)) {
+            // If validation passes, proceed with conversion
+            convertMeasurmentDataInches(width, height, length);
+        }
 		});
 		$("#widthcm, #heightcm, #lengthcm").on("input", function () {
 			let width = parseFloat($("#widthcm").val()) || 0;
 			let height = parseFloat($("#heightcm").val()) || 0;
 			let length = parseFloat($("#lengthcm").val()) || 0;
-			var additionalInch = 0;
-			let noofups = $('#noofups').val();
-
-			if(noofups == 1 || noofups == 2){
-				additionalInch = 1;
-			}else{
-				additionalInch = 1.5;
-			}
-
-			var reelsize = ((width + height) / 2.54) + additionalInch;
-			var cutsize = ((length + width) / 2.54) + 2;
-
-			$('#reelsize').val(reelsize);
-			$('#cutsize').val(cutsize);
-			convertMeasurmentDataCm(width, height, length);
+			
+			const widthIn = width / 2.54;
+			const heightIn = height / 2.54;
+			const lengthIn = length / 2.54;
+        
+        // First validate dimensions
+        if (validateDimensions(widthIn, heightIn, lengthIn)) {
+            // If validation passes, proceed with conversion
+            convertMeasurmentDataCm(width, height, length);
+        }
 		});
-	});
+		});
 
-	$("#mainitem").change(function () {
+		$("#mainitem").change(function () {
 		var itemId = $(this).val();
 		$('#flidatatable > tbody').empty()
 		$('#materialdatatable > tbody').empty()
@@ -563,6 +721,18 @@ include "include/topnavbar.php";
 					$('#flicount').val('');
 					$('#materialreel').val('');
 					$('#noofups').val('');
+					$('#noofbox').val('');  
+					$('#cartontype').val('').trigger('change');  
+					
+					// Reset offset fields
+					$('#hasOffset').prop('checked', false);
+					$('#oflength').val('').prop('disabled', true);
+					$('#ofwidth').val('').prop('disabled', true);
+					
+					// Reset diecut fields
+					$('#hasdiecut').prop('checked', false);
+					$('#dielength').val('').prop('disabled', true);
+					$('#diewidth').val('').prop('disabled', true);
 
 					$('#flidatatable > tbody').empty();
 					$('#btnCreateUpdateProfile').html(
@@ -584,6 +754,31 @@ include "include/topnavbar.php";
 					$('#flicount').val(obj.noofflies);
 					$('#materialreel').val(obj.materialId);
 					$('#noofups').val(obj.noofups);
+					$('#noofbox').val(obj.noofbox);
+					$('#cartontype').val(obj.cartontype).trigger('change');
+					
+					// Handle offset fields
+					if(obj.hasOffset == 1) {
+						$('#hasOffset').prop('checked', true);
+						$('#oflength').val(obj.offsetLength).prop('disabled', false);
+						$('#ofwidth').val(obj.offsetWidth).prop('disabled', false);
+					} else {
+						$('#hasOffset').prop('checked', false);
+						$('#oflength').val('').prop('disabled', true);
+						$('#ofwidth').val('').prop('disabled', true);
+					}
+					
+					// Handle diecut fields
+					if(obj.hasDiecut == 1) {
+						$('#hasdiecut').prop('checked', true);
+						$('#dielength').val(obj.diecutLength).prop('disabled', false);
+						$('#diewidth').val(obj.diecutWidth).prop('disabled', false);
+					} else {
+						$('#hasdiecut').prop('checked', false);
+						$('#dielength').val('').prop('disabled', true);
+						$('#diewidth').val('').prop('disabled', true);
+					}
+
 					convertMeasurmentDataInches(obj.width, obj.height, obj.length);
 
 
@@ -633,8 +828,9 @@ include "include/topnavbar.php";
 				}
 			}
 		});
-	})
-	$("#btnaddflidataadd").click(function () {
+		}
+		)
+		$("#btnaddflidataadd").click(function () {
 		if (!$("#flidataform")[0].checkValidity()) {
 			$("#hiddenflidataformsubmit").click();
 		} else {
@@ -768,6 +964,15 @@ include "include/topnavbar.php";
 		var mainitemId = $('#mainitem').val();
 		var recordOption = $('#recordOption').val();
 
+		var noofbox = $('#noofbox').val();
+		var cartontype = $('#cartontype').val();
+		var hasOffset = $('#hasOffset').is(':checked') ? 1 : 0;
+		var offsetLength = $('#oflength').val();
+		var offsetWidth = $('#ofwidth').val();
+		var hasDiecut = $('#hasdiecut').is(':checked') ? 1 : 0;
+		var diecutLength = $('#dielength').val();
+		var diecutWidth = $('#diewidth').val();
+
 		$.ajax({
 			type: "POST",
 			data: {
@@ -788,7 +993,15 @@ include "include/topnavbar.php";
 				noofups: noofups,
 				materialId: materialId,
 				recordOption: recordOption,
-				mainitemId: mainitemId
+				mainitemId: mainitemId,
+				noofbox: noofbox,
+				cartontype: cartontype,
+				hasOffset: hasOffset,
+				oflength: offsetLength,
+				ofwidth: offsetWidth,
+				hasdiecut: hasDiecut,
+				dielength: diecutLength,
+				diewidth: diecutWidth
 			},
 			url: '<?php echo base_url() ?>Itemprofile/InsertUpdateItemProfile',
 			success: function (result) {
@@ -885,6 +1098,24 @@ include "include/topnavbar.php";
 				'</div>'
 		});
 	}
+
+
+	document.getElementById('hasOffset').addEventListener('change', function() {
+    const lengthInput = document.getElementById('oflength');
+	const widthInput = document.getElementById('ofwidth');
+    lengthInput.disabled = !this.checked;
+	widthInput.disabled = !this.checked;
+    if (!this.checked) widthInput.value = '';
+    if (!this.checked) lengthInput.value = '';
+ 	});
+	 document.getElementById('hasdiecut').addEventListener('change', function() {
+    const lengthInput = document.getElementById('dielength');
+	const widthInput = document.getElementById('diewidth');
+    lengthInput.disabled = !this.checked;
+	widthInput.disabled = !this.checked;
+    if (!this.checked) widthInput.value = '';
+    if (!this.checked) lengthInput.value = '';
+ 	});
 
 	function deactive_confirm() {
 		return confirm("Are you sure you want to deactive this?");

@@ -12,6 +12,7 @@ class Itemprofile extends CI_Controller {
 		$this->load->model('Mainitemsinfo');
 		$this->load->model('Fliinformationinfo');
 		$this->load->model('Cuttypeinfo');
+		$this->load->model('Cartontypeinfo');
 		$this->load->model('Machineinfo');
 		$result['gsmlist']=$this->Gsminfo->GetGsmList();
 		$result['materiallist']=$this->Rowmaterialsinfo->GetMaterialList();
@@ -19,7 +20,9 @@ class Itemprofile extends CI_Controller {
 		$result['flilist']=$this->Fliinformationinfo->GetFliList();
 		$result['cuttypelist']=$this->Cuttypeinfo->GetCuttypeList();
 		$result['machinelist']=$this->Machineinfo->GetMachineList();
+		$result['cartontypelist']=$this->Cartontypeinfo->Getcartontypelist();
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+
 		$this->load->view('itemprofile',$result);
 	}
 

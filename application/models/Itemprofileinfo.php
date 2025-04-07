@@ -21,6 +21,19 @@ class Itemprofileinfo extends CI_Model{
         $cuttypeId=$this->input->post('cuttypeId');
         $noofups=$this->input->post('noofups');
        
+        $noofbox=$this->input->post('noofbox');
+        $cartontype=$this->input->post('cartontype');
+        
+        // Offset fields
+        $hasOffset = $this->input->post('hasOffset') ? 1 : 0;
+        $offsetLength = $this->input->post('oflength');
+        $offsetWidth = $this->input->post('ofwidth');
+        
+        // Die cut fields
+        $hasDiecut = $this->input->post('hasdiecut') ? 1 : 0;
+        $diecutLength = $this->input->post('dielength');
+        $diecutWidth = $this->input->post('diewidth');
+
         $mainitemId=$this->input->post('mainitemId');
         $flicount=$this->input->post('flicount');
         $recordOption=$this->input->post('recordOption');
@@ -40,6 +53,14 @@ class Itemprofileinfo extends CI_Model{
                 'outersize'=> $outersize, 
                 'noofflies'=> $flicount, 
                 'noofups'=> $noofups, 
+                'noofbox'=> $noofbox,
+                'tbl_cartontype_idtbl_cartontype'=> $cartontype,
+                'has_offset'=> $hasOffset,
+                'offset_length'=> $hasOffset ? $offsetLength : NULL,
+                'offset_width'=> $hasOffset ? $offsetWidth : NULL,
+                'has_diecut'=> $hasDiecut,
+                'diecut_length'=> $hasDiecut ? $diecutLength : NULL,
+                'diecut_width'=> $hasDiecut ? $diecutWidth : NULL,
                 'status'=> '1', 
                 'insertdatetime'=> $updatedatetime, 
                 'tbl_user_idtbl_user'=> $userID,
@@ -296,7 +317,15 @@ class Itemprofileinfo extends CI_Model{
             $obj->actualcutsize=$row->actualcutsize;
             $obj->noofflies=$row->noofflies;
             $obj->noofups=$row->noofups;
+            $obj->noofbox=$row->noofbox;
+            $obj->cartontype=$row->tbl_cartontype_idtbl_cartontype;
             $obj->materialId=$row->tbl_row_material_idtbl_row_material;
+            $obj->hasOffset=$row->has_offset;
+            $obj->offsetLength=$row->offset_length;
+            $obj->offsetWidth=$row->offset_width;
+            $obj->hasDiecut=$row->has_diecut;
+            $obj->diecutLength=$row->diecut_length;
+            $obj->diecutWidth=$row->diecut_width;
             $obj->detailsArray=$detailsArray;
             $obj->materialDetailsArray=$materialDetailsArray;
             $obj->machineDetailsArray=$machineDetailsArray;
